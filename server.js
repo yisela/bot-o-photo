@@ -10,7 +10,7 @@ function random_from_array(images){
   return images[Math.floor(Math.random() * images.length)];
 }
 
-// upload random image
+// upload random image to Twitter and create message
 function upload_random_image(images){
   console.log('Opening an image...');
   var image_path = path.join(__dirname, '/images/' + random_from_array(images)),
@@ -35,8 +35,17 @@ function upload_random_image(images){
             console.log('ERROR:');
             console.log(err);
           }
-          else{
-            console.log('Posted an image!');
+          else{       // Delete image after it was posted
+            console.log('Posted an image! Now deleting...');
+            fs.unlink(image_path, function(err){
+              if (err){
+                console.log('ERROR: unable to delete image ' + image_path);
+                console.log(err);
+              }
+              else{
+                console.log('image ' + image_path + ' was deleted');
+              }
+            });
           }
         }
       );
@@ -44,7 +53,6 @@ function upload_random_image(images){
   });
 }
 
-// see what files are in our images directory
 fs.readdir(__dirname + '/images', function(err, files) {
   if (err){
     console.log(err);
@@ -55,8 +63,9 @@ fs.readdir(__dirname + '/images', function(err, files) {
       images.push(f);
     });
 
+    // Set interval for posting images (10000 = 10 seconds; 14400000 = 4 hours)
     setInterval(function(){
       upload_random_image(images);
-    }, 10000);
+    }, 14400000);
   }
 });
