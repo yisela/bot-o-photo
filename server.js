@@ -28,14 +28,17 @@ function upload_random_image(images){
       console.log('Now tweeting it...');
 
       T.post('statuses/update', {
-        media_ids: new Array(data.media_id_string)
+        // Image description - will be posted alongside it
+         status: 'This HD image is Public Domain. Free to use and distribute.',
+         media_ids: new Array(data.media_id_string)
       },
         function(err, data, response) {
           if (err){
             console.log('ERROR:');
             console.log(err);
           }
-          else{       // Delete image after it was posted
+          else{
+            // Delete image after it was posted
             console.log('Posted an image! Now deleting...');
             fs.unlink(image_path, function(err){
               if (err){
@@ -62,6 +65,9 @@ fs.readdir(__dirname + '/images', function(err, files) {
     files.forEach(function(f) {
       images.push(f);
     });
+
+    // post test image when deploying changes
+    upload_random_image(images);
 
     // Set interval for posting images (10000 = 10 seconds; 14400000 = 4 hours)
     setInterval(function(){
